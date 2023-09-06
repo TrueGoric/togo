@@ -2,5 +2,11 @@
 resolver = "2"
 members = [
     "togo",
-    "togo-core"
+    "togo-core",
+    "togo-vr"
 ]
+
+[workspace.dependencies]
+async-trait = "0.1.73"
+bytes = "1.4.0"
+thiserror = "1.0.47"
