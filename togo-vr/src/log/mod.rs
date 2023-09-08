@@ -9,7 +9,7 @@ pub trait Log<T> {
     fn current_offset(&self) -> u64;
     fn current_size_with_offset(&self) -> u64;
     fn get(&self, index: u64) -> LogResult<&T>;
-    fn push(&mut self, value: T) -> LogResult<()>;
+    fn push(&mut self, value: T);
     fn trim_front(&mut self, first: u64) -> LogResult<()>;
     fn trim_end(&mut self, last: u64) -> LogResult<()>;
 }

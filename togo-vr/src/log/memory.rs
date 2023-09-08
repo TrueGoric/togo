@@ -45,10 +45,8 @@ impl<T> Log<T> for MemoryLog<T> {
         Ok(self.data.get(get_index as usize).unwrap())
     }
 
-    fn push(&mut self, value: T) -> LogResult<()> {
+    fn push(&mut self, value: T) {
         self.data.push_back(value);
-
-        Ok(())
     }
 
     fn trim_front(&mut self, first: u64) -> LogResult<()> {
@@ -91,10 +89,10 @@ mod tests {
     pub fn get_retrieves_correct_element() {
         let mut log = MemoryLog::new();
 
-        log.push(347).unwrap();
-        log.push(11).unwrap();
-        log.push(45).unwrap();
-        log.push(125).unwrap();
+        log.push(347);
+        log.push(11);
+        log.push(45);
+        log.push(125);
 
         assert_eq!(log.get(0).unwrap(), &347);
         assert_eq!(log.get(2).unwrap(), &45);
@@ -104,8 +102,8 @@ mod tests {
 
         assert_eq!(log.get(log.current_size_with_offset() - 1).unwrap(), &125);
 
-        log.push(2233).unwrap();
-        log.push(111).unwrap();
+        log.push(2233);
+        log.push(111);
 
         assert_eq!(log.get(4).unwrap(), &2233);
         assert_eq!(log.get(log.current_size_with_offset() - 1).unwrap(), &111);
@@ -119,14 +117,14 @@ mod tests {
     pub fn size_is_correct_when_pushed_and_trimmed() {
         let mut log = MemoryLog::new();
 
-        log.push(12).unwrap();
-        log.push(12).unwrap();
+        log.push(12);
+        log.push(12);
 
         assert_eq!(log.current_size(), 2);
         assert_eq!(log.current_size_with_offset(), 2);
 
-        log.push(12).unwrap();
-        log.push(12).unwrap();
+        log.push(12);
+        log.push(12);
 
         assert_eq!(log.current_size(), 4);
         assert_eq!(log.current_size_with_offset(), 4);
@@ -136,7 +134,7 @@ mod tests {
         assert_eq!(log.current_size(), 2);
         assert_eq!(log.current_size_with_offset(), 4);
 
-        log.push(12).unwrap();
+        log.push(12);
 
         assert_eq!(log.current_size(), 3);
         assert_eq!(log.current_size_with_offset(), 5);
