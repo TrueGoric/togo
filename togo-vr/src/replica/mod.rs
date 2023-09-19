@@ -113,12 +113,12 @@ where
             return Err(ReplicaError::NotForPrimary);
         }
 
-        if message.view_number < self.state.view_number {
+        if message.view_number > self.state.view_number {
             // TODO: go into recovery and initiate a state transfer
             todo!()
         }
 
-        if message.view_number > self.state.view_number {
+        if message.view_number < self.state.view_number {
             // TODO: drop the message and notify the replica that it's lagging behind
             todo!()
         }
