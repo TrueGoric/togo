@@ -1,9 +1,9 @@
-use std::{collections::BTreeSet, marker::PhantomData};
+use std::collections::BTreeSet;
 
 use thiserror::Error;
 
 use crate::{
-    message::{BatchedMessage, Message},
+    message::{BatchedClusterMessage, ClusterMessageEnvelope},
     transport::{TransportChannel, TransportResult},
 };
 
@@ -13,17 +13,17 @@ pub type ClusterResult<T> = Result<T, ClusterError>;
 
 pub struct Cluster<O, T>
 where
-    T: TransportChannel<ReplicaIdentity, BatchedMessage<O>>,
+    T: TransportChannel<ReplicaIdentity, BatchedClusterMessage<O>>,
 {
     channel: T,
     replicas: BTreeSet<ReplicaIdentity>,
     current_primary: ReplicaIdentity,
-    message_buffer: Vec<Message<O>>,
+    message_buffer: Vec<ClusterMessageEnvelope<O>>,
 }
 
 impl<O, T> Cluster<O, T>
 where
-    T: TransportChannel<ReplicaIdentity, BatchedMessage<O>>,
+    T: TransportChannel<ReplicaIdentity, BatchedClusterMessage<O>>,
 {
     pub fn bootstrap<R: Into<BTreeSet<ReplicaIdentity>>>(
         channel: T,
@@ -35,7 +35,7 @@ where
             return Err(ClusterError::InsufficientReplicas);
         }
 
-        let current_primary = replicas.first().unwrap().clone();
+        let current_primary = *replicas.first().unwrap();
 
         Ok(Self {
             channel,
@@ -45,15 +45,19 @@ where
         })
     }
 
-    pub fn current_primary(&self) -> &ReplicaIdentity {
-        &self.current_primary
+    pub fn current_primary(&self) -> ReplicaIdentity {
+        self.current_primary
     }
 
-    pub fn broadcast(&mut self, message: Message<O>) -> TransportResult<()> {
+    pub fn broadcast(&mut self, message: ClusterMessageEnvelope<O>) -> TransportResult<()> {
         todo!()
     }
 
-    pub async fn receive(&self) -> TransportResult<Option<Message<O>>> {
+    pub fn send(&mut self, recipient: ReplicaIdentity, message: ClusterMessageEnvelope<O>) -> TransportResult<()> {
+        todo!()
+    }
+
+    pub async fn receive(&self) -> TransportResult<Option<ClusterMessageEnvelope<O>>> {
         todo!()
     }
 
