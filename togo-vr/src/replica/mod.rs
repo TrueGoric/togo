@@ -1,4 +1,4 @@
-use std::{collections::BTreeMap, ops::Deref, rc::Rc};
+use std::{collections::BTreeMap, ops::Deref, rc::Rc, marker::PhantomData};
 
 use thiserror::Error;
 
@@ -13,7 +13,7 @@ use crate::{
 };
 
 use self::{
-    client::{ClientIdentity, ClientOperation},
+    client::{ClientIdentity, ClientOperation, RequestNumber},
     cluster::Cluster,
 };
 
@@ -25,15 +25,16 @@ pub type ReplicaResult<T> = Result<T, ReplicaError>;
 pub struct Replica<O, OR, T, L, S>
 where
     T: TransportChannel<ReplicaIdentity, BatchedClusterMessage<O>>,
-    L: Log<Rc<O>>,
+    L: Log<ClientOperation<O, OR>>,
     S: StateMachine<O, OR>,
 {
     identity: ReplicaIdentity,
     op_log: L,
-    client_log: BTreeMap<ClientIdentity, ClientOperation<Rc<O>, OR>>,
+    client_log: BTreeMap<ClientIdentity, RequestNumber>,
     state_machine: S,
     state: ReplicaState,
     cluster: Cluster<O, T>,
+    phantom_operation_result: PhantomData<OR>
 }
 
 pub struct ReplicaState {
@@ -182,6 +183,10 @@ where
             view_number: self.state.view_number,
             op_number: self.op_log.current_size_with_offset(),
         }))
+    }
+
+    fn commit(&mut self, up_to_operation: u64) {
+
     }
 }
 

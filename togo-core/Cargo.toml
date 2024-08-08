@@ -6,3 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+async-trait = "0.1.73"
+bytes = { workspace = true }
+rkyv = "0.7.42"
+savefile = { version = "0.16.2", features = ["derive"] }
+sled = "0.34.7"
+thiserror = {workspace = true }

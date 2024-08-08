@@ -5,8 +5,11 @@ use crate::message::ClientMessage;
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct ClientIdentity {}
 
+#[derive(Debug)]
+pub struct RequestNumber(u64);
+
 pub struct ClientOperation<O, OR> {
-    pub request_number: u64,
+    pub request_number: RequestNumber,
     pub operation: O,
     pub response: Option<OR>,
 }
